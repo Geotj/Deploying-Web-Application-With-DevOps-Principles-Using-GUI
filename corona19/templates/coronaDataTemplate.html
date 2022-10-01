@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Corona Stats</title>
+    <style>
+        table, td, th {
+          border: 1px solid black;
+          text-align: left;
+        }
+
+        table {
+          border-collapse: collapse;
+          width: 50%;
+          margin-left: auto;
+          margin-right: auto;
+        }
+
+        th, td {
+          padding: 15px;
+        }
+
+        body {
+          background-color:  #d5e1df;
+        }
+        table { background-color: #f4e1d2; }
+
+</style>
+</head>
+<body>
+    <h1>Corona Stats from WorldOmeter </h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Total Cases</th>
+                <th>Total Deaths</th>
+                <th>Total Recovered</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for obj in results %}
+            <tr>
+                <td>{{obj.totalcases}}</td>
+                <td>{{obj.totaldeaths}}</td>
+                <td>{{obj.totalrecovered}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
