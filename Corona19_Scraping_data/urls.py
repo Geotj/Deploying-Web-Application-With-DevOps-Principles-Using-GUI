@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
-from corona19.views import Corona19ViewSet, coronadata_table_template
+from corona19.views import Corona19ViewSet, coronadata_table_template, webscrapper
 
 router = DefaultRouter()
 router.register('corona_data', Corona19ViewSet, basename='corona_data')
@@ -26,5 +26,6 @@ router.register('corona_data', Corona19ViewSet, basename='corona_data')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('corona-table/', coronadata_table_template, name="corona-table"),
+    path('scrappingtool/',webscrapper, name="scrappingtool"),
     path('', include(router.urls))
 ]

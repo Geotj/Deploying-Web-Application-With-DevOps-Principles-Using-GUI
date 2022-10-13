@@ -22,42 +22,34 @@ def coronadata_table_template(request):
     queryset = corona19_model.objects.all()
     return render(request, 'coronaDataTemplate.html', {'results': queryset})
 
-def webscrapper():
-    import requests
-    url = "https://www.worldometers.info/coronavirus/"
-    result = requests.get(url)
-    import bs4
-    soup = bs4.BeautifulSoup(result.text, 'lxml')
-    cases = soup.find_all('div', class_='maincounter-number')
-    data = []
+@api_view(['GET'])
+def webscrapper(request):
+    try:
+        import requests
+        import pandas as pd
+        import bs4
+        url = "https://www.worldometers.info/coronavirus/"
+        result = requests.get(url)
 
-    for i in cases:
-        span = i.find('span')
-        data.append(span.string)
+        soup = bs4.BeautifulSoup(result.text, 'lxml')
+        cases = soup.find_all('div', class_='maincounter-number')
+        data = []
 
-    import pandas as pd
-    df = pd.DataFrame({'CoronaData': data})
-    df.index = ["TotalCases", "TotalDeaths", "TotalRecovered"]
+        for i in cases:
+            span = i.find('span')
+            data.append(span.string)
 
-    requests.get('http://localhost:8000/corona_data/delete_all_data/')
 
-    import webbrowser
-    url = 'http://localhost:8000/corona_data/'
-    tc = df.iloc[0]
-    td = df.iloc[1]
-    tr = df.iloc[2]
+        df = pd.DataFrame({'CoronaData': data})
+        df.index = ["TotalCases", "TotalDeaths", "TotalRecovered"]
 
-    df.iloc[0]
-    df.iloc[1]
-    df.iloc[2]
-
-    myobj = {
-        "totalcases": tc,
-        "totaldeaths": td,
-        "totalrecovered": tr
-    }
-
-    x = requests.post(url, data=myobj)
-
-    webbrowser.open(url)
-
+        # To delete all existing rows from the table
+        corona19_model.objects.all().delete()
+        tc = df.iloc[0]
+        td = df.iloc[1]
+        tr = df.iloc[2]
+        # to create a new object
+        corona19_model.objects.create(totalcases=tc, vtotaldeaths=td, totalrecovered=tr)
+        return Response("success")
+    except Exception as err:
+        raise Exception(str(err))
