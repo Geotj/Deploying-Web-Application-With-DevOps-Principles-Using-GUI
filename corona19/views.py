@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 
 from rest_framework import viewsets
@@ -49,7 +49,8 @@ def webscrapper(request):
         td = df.iloc[1]
         tr = df.iloc[2]
         # to create a new object
-        corona19_model.objects.create(totalcases=tc, vtotaldeaths=td, totalrecovered=tr)
-        return Response("success")
+        corona19_model.objects.create(totalcases=tc, totaldeaths=td, totalrecovered=tr)
+        response = corona19_model.objects.all().values()
+        return Response(response)
     except Exception as err:
         raise Exception(str(err))
